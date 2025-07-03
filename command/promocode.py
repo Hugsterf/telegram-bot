@@ -3,6 +3,7 @@ from aiogram import Router, types
 from aiogram.enums import ChatType
 from aiogram.types import Message
 from ctypes import cdll, c_char_p, c_int
+from config import ADMINS
 import logging
 import platform
 import ctypes
@@ -21,7 +22,8 @@ router = Router()
 
 @router.message(Command("promo"))
 async def promo(message: types.Message):
-    user_id = message.from_user.id
+    user_id = message.from_user.id    
+    
     # if message.chat.type != ChatType.PRIVATE:
     #     await message.answer("❗ Функция работает только в личных сообщениях!")
     #     return
@@ -37,17 +39,25 @@ async def promo(message: types.Message):
         try:
             result = lib.find_promocode(promo_code.encode('utf-8'))
             if result == 1:
-                await message.answer("✅ Вы успешно использовали промокод!")
+                await message.answer("<b>✅ Вы успешно использовали промокод!</b>", parse_mode="HTML")
             else:
-                await message.answer("❌ Промокод недействителен или уже использован")
+                await message.answer("<b>❌ Промокод недействителен или уже использован</b>", parse_mode="HTML")
 
         except Exception as e:
             logging.error(f"Error processing promo code: {e}")
-            await message.answer("❗ Произошла ошибка при проверке промокода")
+            await message.answer("<b>❗ Произошла ошибка при проверке промокода</b>", parse_mode="HTML")
+
 
 
 @router.message(Command("addpromo"))
-async def addpromo(message: types.Message):
-    promo_to_add = 's'
-    lib.add_promocode(promo_to_add.encode('utf-8'), 10)
-    await message.answer("!")
+async def addpromo(message: Message):
+    if message.from_user.id not in ADMINS:
+        await message.answer("<b>❌ Отказано в доступе</b>", parse_mode="HTML")
+        return
+    try:
+        _, promo, count = message.text.split()
+        count = int(count)
+        lib.add_promocode(promo.encode('utf-8'), count)
+        await message.answer(f"<b>✅ Промокод {promo} добавлен!</b>", parse_mode="HTML")
+    except:
+        await message.answer("<b>Использование: /addpromo PROMOCODE COUNT</b>", parse_mode="HTML")

@@ -1,1 +1,2 @@
 TOKEN = '7086094336:AAE6u6e3IgZqNXyJKsHVWpiYG1OyiC_GBTE'
+ADMINS = [5225848864] # user_id admin users

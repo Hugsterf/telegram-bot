@@ -2,6 +2,7 @@ from aiogram.filters import Command
 from aiogram import Router, types
 from aiogram.enums import ChatType
 from aiogram.types import Message
+from ctypes import cdll, c_char_p, c_int
 import logging
 import platform
 import ctypes
@@ -13,8 +14,8 @@ DLL_PATH = r"C:\Users\bogda\OneDrive\Desktop\telegram-bot\Database_promo\promo64
 lib = ctypes.CDLL(DLL_PATH)
 
 lib.add_promocode.argtypes = [ctypes.c_char_p, ctypes.c_int]
-lib.find_promocode.argtypes = [ctypes.c_char_p]
-lib.find_promocode.restype = ctypes.c_int
+lib.find_promocode.argtypes = [c_char_p]
+lib.find_promocode.restype = c_int
 
 router = Router()
 
@@ -32,10 +33,9 @@ async def promo(message: types.Message):
         await message.answer("<b>❌ Введите промокод</b>", parse_mode="HTML")
         return
     else:
-        promo_code = parts[1]
+        promo_code = parts[1].strip()
         try:
             result = lib.find_promocode(promo_code.encode('utf-8'))
-
             if result == 1:
                 await message.answer("✅ Вы успешно использовали промокод!")
             else:

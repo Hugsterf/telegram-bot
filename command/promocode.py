@@ -48,6 +48,6 @@ async def promo(message: types.Message):
 
 @router.message(Command("addpromo"))
 async def addpromo(message: types.Message):
-    promo_to_add = 'a'
+    promo_to_add = 's'
     lib.add_promocode(promo_to_add.encode('utf-8'), 10)
     await message.answer("!")

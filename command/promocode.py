@@ -10,8 +10,8 @@ import ctypes
 import os
 
 from .datebase import *
-
-DLL_PATH = r"C:\Users\bogda\OneDrive\Desktop\telegram-bot\Database_promo\promo64.dll"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DLL_PATH = os.path.join(BASE_DIR, "Database_promo", "promo64.dll")
 lib = ctypes.CDLL(DLL_PATH)
 
 lib.add_promocode.argtypes = [ctypes.c_char_p, ctypes.c_int]
@@ -24,9 +24,9 @@ router = Router()
 async def promo(message: types.Message):
     user_id = message.from_user.id    
     
-    # if message.chat.type != ChatType.PRIVATE:
-    #     await message.answer("❗ Функция работает только в личных сообщениях!")
-    #     return
+    if message.chat.type != ChatType.PRIVATE:
+        await message.answer("❗ Функция работает только в личных сообщениях!")
+        return
     logging.info(f"Пользователь {user_id} вызвал команду /promo")
 
     parts = message.text.split()

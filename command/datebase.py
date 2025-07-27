@@ -4,7 +4,6 @@ import time
 conn = sqlite3.connect('casino.db')
 cursor = conn.cursor()
 
-print("Начинаю создавать таблицу users...")
 try:
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
@@ -25,7 +24,6 @@ try:
     )
     """)
     conn.commit()
-    print("Таблица users успешно создана.")
 except Exception as e:
     print(f"Ошибка при создании таблицы: {e}")
 

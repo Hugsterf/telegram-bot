@@ -201,9 +201,9 @@ int find_payment(const std::string promouser, const std::string mainfile, const 
                 fileindex.close();
                 return 0;
             }
-            return curpay;
             filemain.close();
             fileindex.close();
+            return curpay;
         }
     }
     filemain.close();
